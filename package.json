@@ -19,6 +19,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
     "apexcharts": "^3.41.0",
+    "axios": "^1.6.2",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^2.30.0",
     "faker": "^5.5.3",
