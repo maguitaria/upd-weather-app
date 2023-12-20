@@ -28,8 +28,6 @@ build
 
 # Miscellaneous
 *.local
-
-images
 /test-results/
 /playwright-report/
 /blob-report/
