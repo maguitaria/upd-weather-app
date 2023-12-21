@@ -1,6 +1,12 @@
 // src/components/WeatherCardsList.tsx
-import React, { useContext, useEffect, useRef, useState } from "react"
-import WeatherFlashCard from "./WeatherFlashCard"
+import React, {
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import WeatherFlashCard from "./WeatherFlashCard";
 
 import { get7DaysForecast, getCurrentWeather } from "../axios/fetch";
 import WeatherDetailsComponent from "./FlashCardDetails";
@@ -8,38 +14,34 @@ import { LocationContext } from "../contexts/LocationContext";
 
 const WeatherCardsList: React.FC = () => {
   const [dailyData, setDailyData] = useState(null);
-  const [selectedFlashcard, setSelectedFlashcard] = useState(null);
+  const [selectedFlashcard, setSelectedFlashcard] = useState<number | null>(
+    null,
+  );
   const [isVisible, setIsVisible] = useState(false);
-    const { location, getLocation } = useContext(LocationContext);
-    
-  useEffect(() => {
-    getLocation(); // Get location when component mounts
-  }, []);
+  const { location } = useContext(LocationContext);
 
-  
   useEffect(() => {
     if (location.latitude && location.longitude) {
       get7DaysForecast(location.latitude, location.longitude).then((data) => {
         setDailyData(data); // Handle the weather data
       });
     }
-  }, [location.latitude, location.longitude]); 
+  }, [location.latitude, location.longitude]);
 
-const targetRef = useRef(null);
+  const targetRef = useRef<HTMLDivElement | null>(null);
 
+  const handleCardClick = (index: number) => {
+    setSelectedFlashcard(index);
+    setIsVisible(true);
+    // Scroll to the target component
+    if (targetRef) {
+      targetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
-const handleCardClick = (index) => {
-  setSelectedFlashcard(index);
-  setIsVisible(true);
-  // Scroll to the target component
-  if (targetRef.current) {
-    targetRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-};
-
-const handleCloseClick = () => {
-  setIsVisible(false);
-};
+  const handleCloseClick = () => {
+    setIsVisible(false);
+  };
   return (
     <div ref={targetRef}>
       {/* Conditionally render WeatherDetailsComponent */}
@@ -75,4 +77,4 @@ const handleCloseClick = () => {
     </div>
   );
 };
-export  default WeatherCardsList
+export default WeatherCardsList;

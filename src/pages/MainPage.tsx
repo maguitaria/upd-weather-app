@@ -6,7 +6,6 @@ import WeatherChart from "../components/HourlyChart";
 import LocationSearchComponent from "../components/Location";
 
 const MainPage: React.FC = () => {
- 
   return (
     <div className="flex flex-col min-h-screen bg-gray-light/60 overflow-hidden p-3">
       {/* Site header */}

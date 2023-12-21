@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import WeatherCardsList from "../components/WeatherCards";
-import * as fetchModule from "../axios/fetch"
+import * as fetchModule from "../axios/fetch";
 import { get7DaysForecast } from "../axios/fetch";
 
 // Mock the get7DaysForecast API call
@@ -30,12 +30,11 @@ describe("WeatherCardsList", () => {
       .spyOn(fetchModule, "get7DaysForecast")
       .mockResolvedValue(mockWeatherData);
   });
-  
+
   it("renders correctly and fetches data", async () => {
     render(<WeatherCardsList />);
     await waitFor(() => expect(get7DaysForecast).toHaveBeenCalledTimes(1));
     expect(screen.getByText("Sunny")).toBeInTheDocument(); // Change to match actual text/content
-
   });
 
   it("shows WeatherDetailsComponent on card click", async () => {
@@ -44,6 +43,4 @@ describe("WeatherCardsList", () => {
     const firstCard = screen.getByText("Sunny"); // Change to match actual text/content
     fireEvent.click(firstCard);
   });
-
-
 });

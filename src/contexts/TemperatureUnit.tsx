@@ -1,24 +1,36 @@
 // src/contexts/WeatherContext.tsx
-import React, { createContext, useContext, useState } from "react";
+import React, { ReactNode, createContext, useContext, useState } from "react";
 
 type TemperatureUnit = "Celsius" | "Fahrenheit";
 
-interface WeatherContextProps {
+export interface WeatherContextProps {
   temperatureUnit: TemperatureUnit;
   setTemperatureUnit: (unit: TemperatureUnit) => void;
 }
 
-const WeatherContext = createContext<WeatherContextProps | undefined>(undefined);
+export const WeatherContext = createContext<WeatherContextProps>({
+  temperatureUnit: "Celsius",
+  setTemperatureUnit: () => {},
+});
 
-export const WeatherProvider: React.FC = ({ children }) => {
-  const [temperatureUnit, setTemperatureUnit] = useState<TemperatureUnit>("Celsius");
+interface WeatherProviderProps {
+  children: ReactNode;
+}
+
+export const WeatherProvider: React.FC<WeatherProviderProps> = ({
+  children,
+}) => {
+  const [temperatureUnit, setTemperatureUnit] =
+    useState<TemperatureUnit>("Celsius");
 
   const value: WeatherContextProps = {
     temperatureUnit,
     setTemperatureUnit,
   };
 
-  return <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>;
+  return (
+    <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>
+  );
 };
 
 export const useWeatherContext = () => {

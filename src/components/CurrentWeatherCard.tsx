@@ -6,14 +6,10 @@ import { LocationContext } from "../contexts/LocationContext";
 
 const WeatherComponent = () => {
   const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
-  console.log(weatherData)
-   const { location, getLocation } = useContext(LocationContext);
+  const [convertedTemperature, setConvertedTemperature] = useState(0);
+  const [convertedFeelsLike, setConvertedFeelsLike] = useState(0);
+  const { location } = useContext(LocationContext);
   const { temperatureUnit } = useWeatherContext();
-
-
-  useEffect(() => {
-    getLocation(); // Get location when component mounts
-  }, []);
 
   useEffect(() => {
     if (location.latitude && location.longitude) {
@@ -21,42 +17,32 @@ const WeatherComponent = () => {
         setWeatherData(data); // Handle the weather data
       });
     }
-  }, [location.latitude, location.longitude]); 
-  // useEffect(() => {
-  //    getLocation();
-  //   const fetchData = async () => {
-  //     try {
-  //        if (location.latitude && location.longitude) {
-  //       const data = await getCurrentWeather(latitude,longitude);
-  //       setWeatherData(data);
-  //        }
-  //     } catch (error) {
-  //       console.error("Error fetching weather data:", error);
-  //     }
-  //   };
+  }, [location.latitude, location.longitude]);
 
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    // Extract numeric temperature value
+    const numericTemperature = parseFloat(
+      weatherData?.currentWeather.temperature.replace(/[^0-9.-]+/g, ""),
+    );
+    // Convert temperature based on the selected unit
+    setConvertedTemperature(
+      temperatureUnit === "Celsius"
+        ? numericTemperature
+        : (numericTemperature * 9) / 5 + 32,
+    );
 
-  // Extract numeric temperature value
-  const numericTemperature = parseFloat(
-    weatherData?.currentWeather.temperature.replace(/[^0-9.-]+/g, "")
-  );
-  // Convert temperature based on the selected unit
-  const convertedTemperature =
-    temperatureUnit === "Celsius"
-      ? numericTemperature
-      : (numericTemperature * 9) / 5 + 32;
+    // Extract numeric temperature value
+    const numericFeelsLike = parseFloat(
+      weatherData?.currentWeather.apparentTemperature.replace(/[^0-9.-]+/g, ""),
+    );
+    // Convert temperature based on the selected unit
+    setConvertedFeelsLike(
+      temperatureUnit === "Celsius"
+        ? numericFeelsLike
+        : (numericFeelsLike * 9) / 5 + 32,
+    );
+  }, [temperatureUnit, weatherData]);
 
-  // Extract numeric temperature value
-  const numericFeelsLike = parseFloat(
-    weatherData?.currentWeather.apparentTemperature.replace(/[^0-9.-]+/g, "")
-  );
-  // Convert temperature based on the selected unit
-  const convertedFeelsLike =
-    temperatureUnit === "Celsius"
-      ? numericFeelsLike
-      : (numericFeelsLike * 9) / 5 + 32;
   if (!weatherData) {
     return <p>Loading...</p>;
   }
@@ -67,13 +53,9 @@ const WeatherComponent = () => {
       <div className="bg-white p-4 shadow-md rounded-md text-center md:w-full w-full">
         <div className=" items-center">
           {/* Wind speed */}
-        
-            
-            <p className=" font-bold text-md text-gray-600 mb-4">
-              {location.town ? location.town : location.county}
-            </p>
-        
-
+          <p className=" font-bold text-md text-gray-600 mb-4">
+            {location.town ? location.town : location.county}
+          </p>
         </div>
         {/* Additional details */}
 
